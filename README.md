@@ -1,2 +1,2 @@
 # app
-AI powered Server Log Management SoftwarE
+AI powered Server Log Management Software
