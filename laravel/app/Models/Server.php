@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Server extends Model
 {
-    protected $fillable = ['user_id', 'name', 'ip_address', 'environment', 'os_type', 'status', 'api_token'];
+    protected $fillable = ['user_id', 'name', 'ip_address', 'environment', 'os_type', 'status', 'api_token', 'log_pull_url'];
 
     public function user()
     {

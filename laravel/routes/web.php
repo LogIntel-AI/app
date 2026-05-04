@@ -17,6 +17,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('servers', \App\Http\Controllers\ServerController::class);
+    Route::post('servers/{server}/pull', [\App\Http\Controllers\ServerController::class, 'pullLogs'])->name('servers.pull');
 });
 
 Route::middleware('auth')->group(function () {
