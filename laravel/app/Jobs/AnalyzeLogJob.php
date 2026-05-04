@@ -44,8 +44,8 @@ class AnalyzeLogJob implements ShouldQueue
 
             if ($geminiKey) {
                 // Use Google Gemini (Free Tier)
-                $modelUsed = 'gemini-1.5-flash-latest';
-                $response = Http::post('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=' . $geminiKey, [
+                $modelUsed = 'gemini-flash-latest';
+                $response = Http::post('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' . $geminiKey, [
                     'contents' => [
                         ['parts' => [['text' => $prompt]]]
                     ]

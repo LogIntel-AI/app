@@ -29,4 +29,22 @@ class DashboardController extends Controller
 
         return view('dashboard', compact('serversCount', 'totalLogs', 'recentLogs', 'errorLogsCount'));
     }
+
+    public function reanalyze(LogEntry $log)
+    {
+        // Ensure the log belongs to a server owned by the current user
+        if ($log->server->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Delete existing analysis if any
+        if ($log->aiAnalysis) {
+            $log->aiAnalysis()->delete();
+        }
+
+        // Dispatch new analysis job
+        \App\Jobs\AnalyzeLogJob::dispatch($log);
+
+        return back()->with('status', 'Log queued for AI Re-Analysis!');
+    }
 }

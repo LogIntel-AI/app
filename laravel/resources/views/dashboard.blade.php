@@ -74,18 +74,44 @@
                                             {{ strtoupper($log->level) }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-300 max-w-xs truncate" title="{{ $log->message }}">
-                                        {{ Str::limit($log->message, 50) }}
+                                    <td class="px-6 py-4 text-sm text-gray-300 max-w-xs align-top">
+                                        <div class="max-h-32 overflow-y-auto pr-2 custom-scrollbar" title="{{ $log->message }}">
+                                            {{ $log->message }}
+                                        </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-300">
-                                        @if($log->aiAnalysis)
-                                            <span class="text-purple-400 text-xs flex items-center" title="{{ $log->aiAnalysis->summary }}">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                                                {{ Str::limit($log->aiAnalysis->summary ?? $log->aiAnalysis->category, 30) }}
-                                            </span>
-                                        @else
-                                            <span class="text-gray-500 text-xs">No analysis yet</span>
-                                        @endif
+                                    <td class="px-6 py-4 text-sm text-gray-300 min-w-[300px] align-top">
+                                        <div class="flex items-start gap-3">
+                                            <form action="{{ route('logs.reanalyze', $log) }}" method="POST" class="shrink-0" title="Trigger Re-Analysis task for this specific log.">
+                                                @csrf
+                                                <button type="submit" class="p-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-md border border-indigo-500/30 transition-colors shadow-sm relative group">
+                                                    <!-- Re-analyze Icon -->
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                                    </svg>
+                                                    <!-- Tooltip -->
+                                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-gray-900 text-xs text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                                                        Re-Analyze Task
+                                                    </div>
+                                                </button>
+                                            </form>
+                                            
+                                            <div class="flex-1">
+                                                @if($log->aiAnalysis)
+                                                    <div class="text-purple-400 text-xs font-semibold mb-1 flex items-center">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                                        AI Insight ({{ $log->aiAnalysis->category }})
+                                                    </div>
+                                                    <div class="text-gray-300 text-xs whitespace-pre-wrap leading-relaxed max-h-40 overflow-y-auto custom-scrollbar pr-2 block w-full">{{ $log->aiAnalysis->summary }}
+
+@if($log->aiAnalysis->suggestion)
+<strong class="text-green-400 mt-2 block">Suggestion:</strong>
+{{ $log->aiAnalysis->suggestion }}
+@endif</div>
+                                                @else
+                                                    <span class="text-gray-500 text-xs italic mt-1 block">No analysis available. Click the re-analyze button to generate one.</span>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

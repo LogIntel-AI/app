@@ -36,8 +36,9 @@
         <div class="min-h-screen relative">
             <!-- Background Image -->
             <div class="fixed inset-0 z-0">
-                <img src="{{ asset('images/bg.png') }}" alt="Background" class="w-full h-full object-cover opacity-30 mix-blend-luminosity">
-                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900"></div>
+                <img src="{{ asset('images/bg.png') }}" alt="Background" class="w-full h-full object-cover opacity-5 dark:opacity-30 mix-blend-luminosity">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-blue-50 dark:to-gray-900"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-white to-white dark:from-transparent dark:via-transparent dark:to-transparent"></div>
             </div>
             
             <div class="relative z-10">

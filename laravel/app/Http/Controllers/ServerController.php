@@ -50,17 +50,71 @@ class ServerController extends Controller
         }
 
         try {
-            $response = \Illuminate\Support\Facades\Http::timeout(10)->get($server->log_pull_url);
-            
-            if ($response->successful()) {
-                $content = $response->body();
+            $content = '';
+
+            // If the URL matches the local logs endpoint, read directly to avoid deadlock and auth issues
+            if (Str::contains($server->log_pull_url, '/logs') && (Str::contains($server->log_pull_url, request()->getHost()) || Str::contains($server->log_pull_url, 'localhost'))) {
+                $logFile = storage_path('logs/laravel.log');
+                if (file_exists($logFile)) {
+                    $content = file_get_contents($logFile);
+                } else {
+                    return back()->withErrors(['log_pull_url' => 'Local log file not found.']);
+                }
+            } else {
+                $response = \Illuminate\Support\Facades\Http::timeout(10)->get($server->log_pull_url);
+                if ($response->successful()) {
+                    $content = $response->body();
+                } else {
+                    return back()->withErrors(['log_pull_url' => 'Failed to pull logs. Server responded with ' . $response->status()]);
+                }
+            }
+
+            if (empty(trim($content))) {
+                return back()->with('status', 'Log file is empty.');
+            }
+
+            // Parse Laravel log format: [YYYY-MM-DD HH:MM:SS] env.LEVEL: Message
+            $pattern = '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] (\w+)\.([A-Z]+): (.*?)(?=\n\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\]|\z)/sm';
+            if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
+                // To avoid overwhelming DB/AI, take only the last 15 log entries
+                $matches = array_slice($matches, -15);
                 
-                // Keep only last 2000 characters to prevent overwhelming the DB/AI
+                foreach ($matches as $match) {
+                    $timestamp = $match[1];
+                    $env = $match[2];
+                    $level = strtolower($match[3]);
+                    $message = trim($match[4]);
+                    
+                    $raw_log = "[$timestamp] $env.$level: $message";
+                    
+                    // Summarize message for the title
+                    $short_message = explode("\n", $message)[0];
+                    if (strlen($short_message) > 200) {
+                        $short_message = substr($short_message, 0, 200) . '...';
+                    }
+
+                    $log = $server->logEntries()->create([
+                        'level' => $level,
+                        'message' => 'Pulled: ' . $short_message,
+                        'raw_log' => $raw_log,
+                        'category' => 'external_pull',
+                        'source' => 'url',
+                        'occurred_at' => \Carbon\Carbon::parse($timestamp),
+                    ]);
+
+                    // Dispatch AI Analysis for errors
+                    if (in_array($level, ['error', 'warning', 'critical', 'fatal'])) {
+                        \App\Jobs\AnalyzeLogJob::dispatch($log);
+                    }
+                }
+                return back()->with('status', 'Successfully pulled and parsed ' . count($matches) . ' Laravel logs!');
+            } else {
+                // Fallback for non-Laravel logs: just store the last 2000 chars
                 if (strlen($content) > 2000) {
                     $content = substr($content, -2000);
                 }
 
-                $log = $server->logs()->create([
+                $log = $server->logEntries()->create([
                     'level' => 'info',
                     'message' => 'Pulled external logs from ' . parse_url($server->log_pull_url, PHP_URL_HOST),
                     'raw_log' => $content,
@@ -69,12 +123,9 @@ class ServerController extends Controller
                     'occurred_at' => now(),
                 ]);
 
-                // Dispatch AI Analysis
                 \App\Jobs\AnalyzeLogJob::dispatch($log);
 
                 return back()->with('status', 'Logs pulled and queued for AI analysis!');
-            } else {
-                return back()->withErrors(['log_pull_url' => 'Failed to pull logs. Server responded with ' . $response->status()]);
             }
         } catch (\Exception $e) {
             return back()->withErrors(['log_pull_url' => 'Error reaching the URL: ' . $e->getMessage()]);

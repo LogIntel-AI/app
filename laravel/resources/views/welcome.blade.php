@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>InterLog-AI | Intelligent Server Monitoring</title>
+        <title>LogIntel.AI | Intelligent Server Monitoring</title>
         
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -58,7 +58,7 @@
             <nav class="w-full px-6 py-4 flex justify-between items-center glass-card bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
                 <div class="flex items-center gap-2">
                     <svg class="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    <span class="text-lg sm:text-xl font-bold tracking-tight">InterLog-AI</span>
+                    <span class="text-lg sm:text-xl font-bold tracking-tight">LogIntel.AI</span>
                 </div>
                 <div class="flex items-center gap-2 sm:gap-4">
                     <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
@@ -85,7 +85,7 @@
                     Stop reading logs.<br/> Start <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">understanding</span> them.
                 </h1>
                 <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl leading-relaxed">
-                    InterLog-AI analyzes your server logs in real-time, instantly diagnosing crashes and anomalies so you don't have to manually dig through errors.
+                    LogIntel.AI analyzes your server logs in real-time, instantly diagnosing crashes and anomalies so you don't have to manually dig through errors.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                     <a href="{{ route('register') }}" class="w-full sm:w-auto px-8 py-4 text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-xl shadow-blue-500/40 transform hover:-translate-y-1">Start for free</a>
@@ -97,7 +97,7 @@
             <section id="how-it-works" class="py-24 bg-white/50 dark:bg-gray-900/50 glass-card">
                 <div class="max-w-7xl mx-auto px-6">
                     <div class="text-center mb-16">
-                        <h2 class="text-3xl md:text-4xl font-bold mb-4">How InterLog-AI Works</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4">How LogIntel.AI Works</h2>
                         <p class="text-lg text-gray-600 dark:text-gray-400">Three simple steps to secure, intelligent monitoring.</p>
                     </div>
 
@@ -112,7 +112,7 @@
                                 </div>
                                 <div class="flex-1 w-full bg-white dark:bg-gray-900 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-inner overflow-hidden">
                                     <pre class="text-xs sm:text-sm text-gray-800 dark:text-gray-300 font-mono overflow-x-auto whitespace-pre-wrap word-break"><code>Server Token: 
-interlog_sk_7812y4uh12ui41...
+logintel_sk_7812y4uh12ui41...
 
 Endpoint: 
 POST https://your-domain.com/api/logs/ingest</code></pre>
@@ -160,7 +160,7 @@ Suggestion: Check port 5432 and firewall.</code></pre>
 
             <!-- Footer -->
             <footer class="py-8 text-center text-gray-500 dark:text-gray-400 glass-card border-t border-gray-200 dark:border-gray-800">
-                <p>&copy; {{ date('Y') }} InterLog-AI. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} LogIntel.AI. All rights reserved.</p>
             </footer>
         </div>
 
