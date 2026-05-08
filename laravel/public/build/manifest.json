@@ -1,0 +1,23 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-BKNo5ixs.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-hXBokQ4a.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/three-bg.js": {
+    "file": "assets/three-bg-BoRhIjv_.js",
+    "name": "three-bg",
+    "src": "resources/js/three-bg.js",
+    "isEntry": true
+  }
+}
