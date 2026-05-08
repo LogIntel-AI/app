@@ -56,7 +56,10 @@ class ServerController extends Controller
             if (Str::contains($server->log_pull_url, '/logs') && (Str::contains($server->log_pull_url, request()->getHost()) || Str::contains($server->log_pull_url, 'localhost'))) {
                 $logFile = storage_path('logs/laravel.log');
                 if (file_exists($logFile)) {
-                    $content = file_get_contents($logFile);
+                    // Read only the last 100KB to avoid memory limits and slow processing
+                    $fileSize = filesize($logFile);
+                    $offset = max(0, $fileSize - 100000);
+                    $content = file_get_contents($logFile, false, null, $offset);
                 } else {
                     return back()->withErrors(['log_pull_url' => 'Local log file not found.']);
                 }
@@ -73,17 +76,28 @@ class ServerController extends Controller
                 return back()->with('status', 'Log file is empty.');
             }
 
-            // Parse Laravel log format: [YYYY-MM-DD HH:MM:SS] env.LEVEL: Message
-            $pattern = '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] (\w+)\.([A-Z]+): (.*?)(?=\n\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\]|\z)/sm';
-            if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
+            // Fast parsing without catastrophic backtracking
+            $pattern = '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] (\w+)\.([A-Z]+): /m';
+            if (preg_match_all($pattern, $content, $matches, PREG_OFFSET_CAPTURE)) {
+                $count = count($matches[0]);
                 // To avoid overwhelming DB/AI, take only the last 15 log entries
-                $matches = array_slice($matches, -15);
-                
-                foreach ($matches as $match) {
-                    $timestamp = $match[1];
-                    $env = $match[2];
-                    $level = strtolower($match[3]);
-                    $message = trim($match[4]);
+                $startIndex = max(0, $count - 15);
+                $logsProcessed = 0;
+
+                for ($i = $startIndex; $i < $count; $i++) {
+                    $timestamp = $matches[1][$i][0];
+                    $env = $matches[2][$i][0];
+                    $level = strtolower($matches[3][$i][0]);
+                    
+                    $messageStart = $matches[0][$i][1] + strlen($matches[0][$i][0]);
+                    $messageEnd = ($i + 1 < $count) ? $matches[0][$i + 1][1] : strlen($content);
+                    
+                    $message = trim(substr($content, $messageStart, $messageEnd - $messageStart));
+                    
+                    // Limit raw log size to prevent massive DB bloat from stack traces
+                    if (strlen($message) > 5000) {
+                        $message = substr($message, 0, 5000) . "\n...[truncated]";
+                    }
                     
                     $raw_log = "[$timestamp] $env.$level: $message";
                     
@@ -106,8 +120,10 @@ class ServerController extends Controller
                     if (in_array($level, ['error', 'warning', 'critical', 'fatal'])) {
                         \App\Jobs\AnalyzeLogJob::dispatch($log);
                     }
+                    
+                    $logsProcessed++;
                 }
-                return back()->with('status', 'Successfully pulled and parsed ' . count($matches) . ' Laravel logs!');
+                return back()->with('status', 'Successfully pulled and parsed ' . $logsProcessed . ' Laravel logs!');
             } else {
                 // Fallback for non-Laravel logs: just store the last 2000 chars
                 if (strlen($content) > 2000) {
