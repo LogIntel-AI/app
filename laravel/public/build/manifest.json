@@ -1,6 +1,10 @@
 {
+  "_three.module-TpoRxv_-.js": {
+    "file": "assets/three.module-TpoRxv_-.js",
+    "name": "three.module"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-BKNo5ixs.css",
+    "file": "assets/app-DSyIo1-d.css",
     "name": "app",
     "names": [
       "app.css"
@@ -9,15 +13,30 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-hXBokQ4a.js",
+    "file": "assets/app-u0DztLrD.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/three-bg.js"
+    ]
   },
   "resources/js/three-bg.js": {
-    "file": "assets/three-bg-BoRhIjv_.js",
+    "file": "assets/three-bg--bWN2jgr.js",
     "name": "three-bg",
     "src": "resources/js/three-bg.js",
-    "isEntry": true
+    "isDynamicEntry": true,
+    "imports": [
+      "_three.module-TpoRxv_-.js"
+    ]
+  },
+  "resources/js/three-landing.js": {
+    "file": "assets/three-landing-DORSVcVV.js",
+    "name": "three-landing",
+    "src": "resources/js/three-landing.js",
+    "isEntry": true,
+    "imports": [
+      "_three.module-TpoRxv_-.js"
+    ]
   }
 }

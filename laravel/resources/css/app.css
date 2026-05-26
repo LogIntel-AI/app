@@ -2,6 +2,124 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  [x-cloak] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .dashboard-grid {
+    background-image:
+      linear-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent 85%);
+  }
+
+  .dark .dashboard-grid {
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.14) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.14) 1px, transparent 1px);
+  }
+
+  .dashboard-panel {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .dark .dashboard-panel {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.56);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  }
+
+  .metric-card {
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.74);
+    padding: 1.25rem;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .metric-card:hover {
+    border-color: rgba(20, 184, 166, 0.52);
+    box-shadow: 0 24px 54px rgba(15, 23, 42, 0.13);
+    transform: translateY(-3px);
+  }
+
+  .dark .metric-card {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+  }
+
+  .metric-icon {
+    display: inline-grid;
+    height: 2.5rem;
+    width: 2.5rem;
+    place-items: center;
+    border-radius: 1rem;
+  }
+
+  .dashboard-visual {
+    position: relative;
+    min-height: 24rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 1.5rem;
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.22);
+  }
+
+  .signal-scan {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 0%, transparent 38%, rgba(94, 234, 212, 0.22) 47%, transparent 58%, transparent 100%);
+    animation: signal-scan 5.8s ease-in-out infinite;
+  }
+
+  .log-row {
+    padding: 1.25rem;
+    transition: background-color 180ms ease, transform 180ms ease;
+  }
+
+  .log-row:hover {
+    background: rgba(255, 255, 255, 0.58);
+    transform: translateX(2px);
+  }
+
+  .dark .log-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .terminal-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 9px,
+      rgba(20, 184, 166, 0.05) 10px
+    );
+    opacity: 0.5;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+}
+
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -16,5 +134,22 @@
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: rgba(156, 163, 175, 0.5);
+  }
+}
+
+@keyframes signal-scan {
+  0% {
+    transform: translateX(-75%);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(75%);
+    opacity: 0;
   }
 }
