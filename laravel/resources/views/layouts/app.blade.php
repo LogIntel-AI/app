@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'LogIntel.AI') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -32,13 +32,13 @@
             }
         </script>
     </head>
-    <body class="font-sans antialiased text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
-        <div class="min-h-screen relative">
-            <!-- Background Image -->
-            <div class="fixed inset-0 z-0">
-                <img src="{{ asset('images/bg.png') }}" alt="Background" class="w-full h-full object-cover opacity-5 dark:opacity-30 mix-blend-luminosity">
-                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-blue-50 dark:to-gray-900"></div>
-                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-white to-white dark:from-transparent dark:via-transparent dark:to-transparent"></div>
+    <body class="font-sans antialiased text-slate-950 dark:text-slate-100 bg-[#f4f7f4] dark:bg-[#080b10] transition-colors duration-300">
+        <div class="min-h-screen relative overflow-hidden">
+            <div class="fixed inset-0 z-0 pointer-events-none">
+                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(244,247,244,0.98)_0%,rgba(232,238,234,0.94)_52%,rgba(219,231,226,0.92)_100%)] dark:bg-[linear-gradient(180deg,rgba(8,11,16,0.98)_0%,rgba(11,18,24,0.98)_48%,rgba(6,12,16,1)_100%)]"></div>
+                <img src="{{ asset('images/bg.png') }}" alt="" class="absolute right-[-8rem] top-12 hidden h-[38rem] w-[38rem] rounded-[2rem] object-cover opacity-[0.08] grayscale lg:block dark:opacity-[0.18] dark:grayscale-0">
+                <div class="absolute inset-0 dashboard-grid opacity-[0.42] dark:opacity-[0.2]"></div>
+                <div id="three-container" class="absolute inset-0 opacity-70 dark:opacity-85"></div>
             </div>
             
             <div class="relative z-10">
@@ -46,8 +46,8 @@
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-gray-800/50 backdrop-blur-md shadow border-b border-gray-700">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-gray-100">
+                <header class="border-b border-white/70 bg-white/55 shadow-sm shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/35 dark:shadow-black/20">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>

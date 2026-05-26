@@ -15,19 +15,63 @@ class DashboardController extends Controller
         $user = Auth::user();
         $serversCount = Server::where('user_id', $user->id)->count();
         $serverIds = Server::where('user_id', $user->id)->pluck('id');
+        $baseLogQuery = LogEntry::whereIn('server_id', $serverIds);
         
-        $totalLogs = LogEntry::whereIn('server_id', $serverIds)->count();
-        $recentLogs = LogEntry::whereIn('server_id', $serverIds)
+        $totalLogs = (clone $baseLogQuery)->count();
+        $recentLogs = (clone $baseLogQuery)
             ->with(['server', 'aiAnalysis'])
             ->orderBy('occurred_at', 'desc')
-            ->take(10)
+            ->take(12)
             ->get();
             
-        $errorLogsCount = LogEntry::whereIn('server_id', $serverIds)
+        $errorLogsCount = (clone $baseLogQuery)
             ->whereIn('level', ['error', 'critical', 'fatal'])
             ->count();
 
-        return view('dashboard', compact('serversCount', 'totalLogs', 'recentLogs', 'errorLogsCount'));
+        $warningLogsCount = (clone $baseLogQuery)
+            ->whereIn('level', ['warning', 'warn'])
+            ->count();
+
+        $infoLogsCount = (clone $baseLogQuery)
+            ->whereIn('level', ['info', 'debug', 'notice'])
+            ->count();
+
+        $aiAnalysesCount = (clone $baseLogQuery)
+            ->whereHas('aiAnalysis')
+            ->count();
+
+        $analysisCoverage = $totalLogs > 0 ? (int) round(($aiAnalysesCount / $totalLogs) * 100) : 0;
+        $healthScore = $totalLogs > 0
+            ? max(0, 100 - min(55, $errorLogsCount * 8) - min(25, $warningLogsCount * 3))
+            : 100;
+
+        $levelCounts = [
+            'critical' => (clone $baseLogQuery)->whereIn('level', ['critical', 'fatal'])->count(),
+            'error' => (clone $baseLogQuery)->where('level', 'error')->count(),
+            'warning' => $warningLogsCount,
+            'info' => $infoLogsCount,
+        ];
+
+        $topServers = Server::where('user_id', $user->id)
+            ->withCount([
+                'logEntries as logs_count',
+                'logEntries as error_logs_count' => fn ($query) => $query->whereIn('level', ['error', 'critical', 'fatal']),
+            ])
+            ->orderByDesc('logs_count')
+            ->take(4)
+            ->get();
+
+        return view('dashboard', compact(
+            'serversCount',
+            'totalLogs',
+            'recentLogs',
+            'errorLogsCount',
+            'warningLogsCount',
+            'analysisCoverage',
+            'healthScore',
+            'levelCounts',
+            'topServers'
+        ));
     }
 
     public function reanalyze(LogEntry $log)

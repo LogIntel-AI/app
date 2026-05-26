@@ -7,7 +7,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/js/three-bg.js',
+                'resources/js/three-landing.js',
             ],
             refresh: true,
         }),
