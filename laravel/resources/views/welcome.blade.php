@@ -82,7 +82,7 @@
         <!-- Backgrounds -->
         <div class="fixed inset-0 z-0 pointer-events-none fade-bg mix-blend-multiply dark:hidden transition-opacity duration-700" style="background-image: url('{{ asset('images/landing_bg.png') }}');"></div>
         <div class="fixed inset-0 z-0 pointer-events-none fade-bg mix-blend-screen hidden dark:block transition-opacity duration-700" style="background-image: url('{{ asset('images/landing_bg_dark.png') }}'); opacity: 0.6;"></div>
-        <div id="landing-three-container" class="fixed inset-0 z-0 pointer-events-none opacity-40 dark:opacity-60"></div>
+        <div id="three-container" class="fixed inset-0 z-0 pointer-events-none opacity-40 dark:opacity-60"></div>
 
         <div class="relative z-10 flex flex-col min-h-screen">
             <!-- Navigation -->
@@ -225,8 +225,7 @@
             </footer>
         </div>
 
-        <!-- Initialize specific landing page Three.js -->
-        @vite(['resources/js/three-landing.js'])
+        <!-- Specific landing page scripts can go here if needed -->
         
         <!-- Scroll Reveal Script -->
         <script>

@@ -90,8 +90,9 @@ export function initThreeJS(containerId) {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     document.addEventListener('mousemove', (event) => {
-        pointerX = (event.clientX / window.innerWidth - 0.5) * 0.5;
-        pointerY = (event.clientY / window.innerHeight - 0.5) * 0.35;
+        // Disabled mouse tracking based on user request
+        // pointerX = (event.clientX / window.innerWidth - 0.5) * 0.5;
+        // pointerY = (event.clientY / window.innerHeight - 0.5) * 0.35;
     });
 
     function updateParticles() {
@@ -147,8 +148,8 @@ export function initThreeJS(containerId) {
         updateParticles();
         updateConnections();
 
-        particles.rotation.y = elapsed * 0.025 + pointerX;
-        particles.rotation.x = pointerY;
+        particles.rotation.y = elapsed * 0.05; // Smoothly revolves on its own axis
+        particles.rotation.x = Math.sin(elapsed * 0.2) * 0.05; // Gentle tilt
         lines.rotation.copy(particles.rotation);
         scanRing.rotation.z = elapsed * 0.55;
         scanRing.scale.setScalar(1 + Math.sin(elapsed * 1.4) * 0.08);
