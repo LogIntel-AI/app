@@ -58,9 +58,10 @@ RUN composer run-script post-autoload-dump || true
 # Expose port (Render injects $PORT at runtime)
 EXPOSE 8080
 
-# Start: cache config (reads Railway/Render env vars) then serve
+# Start script: cache config, migrate, then run web + queue worker together
 CMD php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
     php artisan migrate --force && \
+    php artisan queue:work --sleep=3 --tries=3 --timeout=90 & \
     php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
