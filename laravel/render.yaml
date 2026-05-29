@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: logintel-ai
+    runtime: image
+    repo: https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME  # update this
+    branch: main
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader &&
+      npm install &&
+      npm run build &&
+      php artisan route:cache &&
+      php artisan view:cache
+    startCommand: php artisan config:cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
+    envVars:
+      - key: APP_NAME
+        value: LogIntel.AI
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true   # Render auto-generates this
+      - key: APP_URL
+        value: https://logintel-ai.onrender.com  # update after deploy
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: SESSION_DRIVER
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: CACHE_STORE
+        value: database
